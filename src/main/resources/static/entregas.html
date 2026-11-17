@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entregas - Transporte y Logística</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/estilos.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div id="navbar"></div>
+
+    <main class="container py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h1 class="h3 mb-0">Entregas</h1>
+            <div class="d-flex gap-2"></div>
+        </div>
+        <div id="alertas"></div>
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">Registrar entrega</div>
+            <div class="card-body">
+                <div id="alertasEntrega"></div>
+                <div id="sinEnTransito" class="alert alert-info d-none mb-0">No hay envíos en tránsito para registrar una entrega.</div>
+                <form id="formEntrega" novalidate>
+                    <div class="row g-3">
+<div class="col-12">
+    <label for="f_idEnvio" class="form-label">Envío en tránsito *</label>
+    <select class="form-select" id="f_idEnvio" name="idEnvio" required data-numero="true"></select>
+    <div class="invalid-feedback">Seleccione el envío entregado.</div>
+</div>
+<div class="col-md-3">
+    <label for="f_fecha" class="form-label">Fecha de entrega *</label>
+    <input type="date" class="form-control" id="f_fecha" name="fecha" required>
+    <div class="invalid-feedback">Ingrese la fecha.</div>
+</div>
+<div class="col-md-3">
+    <label for="f_hora" class="form-label">Hora *</label>
+    <input type="time" class="form-control" id="f_hora" name="hora" required>
+    <div class="invalid-feedback">Ingrese la hora.</div>
+</div>
+<div class="col-md-6">
+    <label for="f_personaRecibe" class="form-label">Persona que recibe *</label>
+    <input type="text" class="form-control" id="f_personaRecibe" name="personaRecibe" required maxlength="100">
+    <div class="invalid-feedback">Indique quién recibe.</div>
+</div>
+<div class="col-md-4">
+    <label for="f_dniRecibe" class="form-label">DNI de quien recibe</label>
+    <input type="text" class="form-control" id="f_dniRecibe" name="dniRecibe" pattern="\d{7,8}" maxlength="8" inputmode="numeric">
+    <div class="invalid-feedback">El DNI debe tener 7 u 8 dígitos.</div>
+</div>
+<div class="col-md-4">
+    <label for="f_estadoEntrega" class="form-label">Estado de la entrega *</label>
+    <select class="form-select" id="f_estadoEntrega" name="estadoEntrega" required><option value="CONFORME">Conforme</option><option value="CON_OBSERVACIONES">Con observaciones</option></select>
+    <div class="invalid-feedback">Seleccione una opción.</div>
+</div>
+<div class="col-md-4">
+    <label for="f_comprobante" class="form-label">Comprobante (opcional)</label>
+    <input type="text" class="form-control" id="f_comprobante" name="comprobante" maxlength="255">
+    <div class="form-text">Nº de remito o referencia del comprobante firmado.</div>
+    <div class="invalid-feedback">Complete este campo correctamente.</div>
+</div>
+<div class="col-12">
+    <label for="f_observaciones" class="form-label">Observaciones / conformidad *</label>
+    <textarea class="form-control" id="f_observaciones" name="observaciones" rows="2" required maxlength="255"></textarea>
+    <div class="invalid-feedback">Las observaciones son obligatorias.</div>
+</div>
+                    </div>
+                    <div class="mt-3"><button type="submit" class="btn btn-success" id="btnEntrega">Confirmar entrega</button></div>
+                </form>
+            </div>
+        </div>
+        <h2 class="h5 text-muted">Entregas registradas</h2>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="tablaEntregas">
+                <thead class="table-light"><tr><th>Envío</th><th>Cliente</th><th>Fecha</th><th>Hora</th><th>Recibió</th><th>DNI</th><th>Estado</th><th>Observaciones</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/entregas.js"></script>
+</body>
+</html>

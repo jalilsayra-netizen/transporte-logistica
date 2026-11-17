@@ -1,0 +1,93 @@
+/* Estilos propios. Todo lo demás lo resuelve Bootstrap 5. */
+
+:root {
+    --color-marca: #0d3b66;
+}
+
+body {
+    min-height: 100vh;
+}
+
+.navbar-marca {
+    background-color: var(--color-marca);
+}
+
+/* Tarjetas del dashboard */
+.tarjeta-numero {
+    border-left: 5px solid transparent;
+}
+.tarjeta-numero .numero {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.borde-preparando { border-left-color: #ffc107; }
+.borde-transito   { border-left-color: #0d6efd; }
+.borde-entregado  { border-left-color: #198754; }
+.borde-cancelado  { border-left-color: #dc3545; }
+.borde-neutro     { border-left-color: #6c757d; }
+
+/* Tablas: que no se rompan en pantallas chicas */
+.table-responsive {
+    background: #fff;
+    border-radius: .5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+
+/* Línea de tiempo del seguimiento de un envío */
+.linea-tiempo {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.5rem;
+    border-left: 3px solid #dee2e6;
+}
+.linea-tiempo li {
+    position: relative;
+    padding: 0 0 1.25rem 1rem;
+}
+.linea-tiempo li::before {
+    content: "";
+    position: absolute;
+    left: -2.05rem;
+    top: .25rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--color-marca);
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px var(--color-marca);
+}
+.linea-tiempo li.estado-ENTREGADO::before { background: #198754; box-shadow: 0 0 0 2px #198754; }
+.linea-tiempo li.estado-CANCELADO::before { background: #dc3545; box-shadow: 0 0 0 2px #dc3545; }
+.linea-tiempo li.estado-EN_TRANSITO::before { background: #0d6efd; box-shadow: 0 0 0 2px #0d6efd; }
+.linea-tiempo li.estado-PREPARANDO::before { background: #ffc107; box-shadow: 0 0 0 2px #ffc107; }
+
+/* Login */
+.pantalla-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0d3b66 0%, #1d6fa5 100%);
+}
+.caja-login {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Ayuda en línea de los formularios */
+.ayuda-formulario dt {
+    font-weight: 600;
+}
+.ayuda-formulario dd {
+    margin-bottom: .5rem;
+    color: #495057;
+}
+
+/* Campos que se escriben siempre en mayúsculas (ej.: patente) */
+.texto-mayuscula {
+    text-transform: uppercase;
+}

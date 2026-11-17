@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Envíos - Transporte y Logística</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/estilos.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div id="navbar"></div>
+
+    <main class="container py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h1 class="h3 mb-0">Envíos</h1>
+            <div class="d-flex gap-2"><button type="button" class="btn btn-primary d-none" id="btnNuevoEnvio">+ Nuevo envío</button></div>
+        </div>
+        <div id="alertas"></div>
+        <div class="row g-2 mb-3">
+            <div class="col-sm-6 col-md-4">
+                <label for="filtroEstado" class="visually-hidden">Filtrar por estado</label>
+                <select id="filtroEstado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="PREPARANDO">Preparando</option>
+                    <option value="EN_TRANSITO">En tránsito</option>
+                    <option value="ENTREGADO">Entregado</option>
+                    <option value="CANCELADO">Cancelado</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="tablaEnvios">
+                <thead class="table-light"><tr><th>N°</th><th>Cliente</th><th>Ruta</th><th>Vehículo</th><th>Conductor</th><th>Salida</th><th>Llegada est.</th><th>Estado</th><th></th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Modal: nuevo envío -->
+        <div class="modal fade" id="modalEnvio" tabindex="-1" aria-labelledby="tituloEnvio" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <form id="formEnvio" novalidate>
+                        <div class="modal-header">
+                            <h2 class="modal-title h5" id="tituloEnvio">Nuevo envío</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertasEnvio"></div>
+                            <button class="btn btn-link btn-sm p-0 mb-2" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#ayudaEnvio" aria-expanded="false" aria-controls="ayudaEnvio">
+                                &#10067; ¿Necesita ayuda con este formulario?
+                            </button>
+                            <div class="collapse" id="ayudaEnvio">
+                                <div class="card card-body bg-light mb-3">
+                                    <dl class="ayuda-formulario mb-0">
+                                    <dt>Pedido</dt><dd>Cada envío nace de un pedido que todavía no tenga envío. Un pedido genera un solo envío.</dd>
+                                    <dt>Fecha de salida</dt><dd>No puede ser anterior a la fecha y hora actuales.</dd>
+                                    <dt>Fecha estimada de llegada</dt><dd>Debe ser posterior a la fecha de salida. Con estas dos fechas se controla que el vehículo y el conductor no tengan otro viaje al mismo tiempo.</dd>
+                                    <dt>Itinerario</dt><dd>Ruta del viaje, por ejemplo: <em>Tucumán - Santiago del Estero - Salta</em>.</dd>
+                                    <dt>Vehículo y conductor</dt><dd>Son opcionales ahora: se pueden asignar después desde el botón <strong>Asignar</strong>. Para iniciar el traslado deben estar los dos asignados. El peso del pedido no puede superar la capacidad del vehículo.</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+<div class="col-12">
+    <label for="f_pedido_idPedido" class="form-label">Pedido pendiente *</label>
+    <select class="form-select" id="f_pedido_idPedido" name="pedido.idPedido" required data-numero="true"></select>
+    <div class="invalid-feedback">Seleccione el pedido a enviar.</div>
+</div>
+<div class="col-md-6">
+    <label for="f_fechaSalida" class="form-label">Fecha y hora de salida *</label>
+    <input type="datetime-local" class="form-control" id="f_fechaSalida" name="fechaSalida" required>
+    <div class="invalid-feedback">Ingrese la fecha de salida.</div>
+</div>
+<div class="col-md-6">
+    <label for="f_fechaEstimadaLlegada" class="form-label">Fecha y hora estimada de llegada *</label>
+    <input type="datetime-local" class="form-control" id="f_fechaEstimadaLlegada" name="fechaEstimadaLlegada" required>
+    <div class="invalid-feedback">Ingrese la fecha de llegada.</div>
+</div>
+<div class="col-12">
+    <label for="f_itinerario" class="form-label">Itinerario *</label>
+    <input type="text" class="form-control" id="f_itinerario" name="itinerario" required maxlength="255">
+    <div class="invalid-feedback">El itinerario es obligatorio.</div>
+</div>
+<div class="col-md-6">
+    <label for="f_vehiculo_idVehiculo" class="form-label">Vehículo (opcional)</label>
+    <select class="form-select" id="f_vehiculo_idVehiculo" name="vehiculo.idVehiculo" data-numero="true"></select>
+    <div class="invalid-feedback">Seleccione una opción.</div>
+</div>
+<div class="col-md-6">
+    <label for="f_conductor_idConductor" class="form-label">Conductor (opcional)</label>
+    <select class="form-select" id="f_conductor_idConductor" name="conductor.idConductor" data-numero="true"></select>
+    <div class="invalid-feedback">Seleccione una opción.</div>
+</div>
+<div class="col-12">
+    <label for="f_observacionesRuta" class="form-label">Observaciones de la ruta</label>
+    <textarea class="form-control" id="f_observacionesRuta" name="observacionesRuta" rows="2" maxlength="255"></textarea>
+    <div class="invalid-feedback">Complete este campo correctamente.</div>
+</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Crear envío</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: asignar vehículo y conductor -->
+        <div class="modal fade" id="modalAsignar" tabindex="-1" aria-labelledby="tituloAsignar" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formAsignar" novalidate>
+                        <div class="modal-header">
+                            <h2 class="modal-title h5" id="tituloAsignar">Asignar vehículo y conductor</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertasAsignar"></div>
+                            <p class="small text-muted" id="resumenAsignar"></p>
+                            <div class="row g-3">
+<div class="col-12">
+    <label for="asig_vehiculo" class="form-label">Vehículo</label>
+    <select class="form-select" id="asig_vehiculo" name="vehiculo.idVehiculo" data-numero="true"></select>
+    <div class="invalid-feedback">Seleccione una opción.</div>
+</div>
+<div class="col-12">
+    <label for="asig_conductor" class="form-label">Conductor</label>
+    <select class="form-select" id="asig_conductor" name="conductor.idConductor" data-numero="true"></select>
+    <div class="invalid-feedback">Seleccione una opción.</div>
+</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar asignación</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: cambiar estado -->
+        <div class="modal fade" id="modalEstado" tabindex="-1" aria-labelledby="tituloEstado" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formEstado" novalidate>
+                        <div class="modal-header">
+                            <h2 class="modal-title h5" id="tituloEstado">Actualizar estado</h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertasEstado"></div>
+                            <p class="small text-muted" id="resumenEstado"></p>
+                            <div class="row g-3">
+<div class="col-12">
+    <label for="est_estado" class="form-label">Nuevo estado *</label>
+    <select class="form-select" id="est_estado" name="estado" required></select>
+    <div class="invalid-feedback">Seleccione una opción.</div>
+</div>
+<div class="col-12">
+    <label for="f_observaciones" class="form-label">Observaciones</label>
+    <textarea class="form-control" id="f_observaciones" name="observaciones" rows="2" maxlength="255"></textarea>
+    <div class="form-text">Queda registrado en el historial del envío.</div>
+    <div class="invalid-feedback">Complete este campo correctamente.</div>
+</div>
+                            </div>
+                            <p class="small text-muted mt-3 mb-0">Para marcar un envío como <strong>entregado</strong> use la pantalla Entregas.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Actualizar estado</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/envios.js"></script>
+</body>
+</html>
